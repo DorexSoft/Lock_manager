@@ -1,0 +1,12 @@
+The lock manager is a console-based password manager 
+created in C++ by the Russian developer Dorex 
+Software. Functionality. 1 Generate a password. This 
+command allows you to generate a strong password,
+containing lowercase and uppercase letters, numbers and 
+special characters. 2 Remember a password. This 
+command allows you to record a service and a login with 
+a password to it. These data are saved in a file.
+3 View keys. This command allows you to
+view a file with all the services and data
+added by the user.
+Developer: https://github.com/DorexSoft
