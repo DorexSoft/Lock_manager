@@ -18,34 +18,65 @@ void generate_pass() { // функция для генерации пароля
 }
     cout << endl;
 }
+
+string xor_encrypt_decrypt(const std::string& text, const std::string& key) { // функция для шифрования/дешифрования
+    string result = text;
+    int key_len = key.length();
+    for (size_t i = 0; i < text.length(); ++i) {
+        result[i] = text[i] ^ key[i % key_len];
+    }
+    return result;
+}
+
 void remember_pass() { // функция для записи ключа
     string service;
     string login;
     string pass;
+    string encryption_key = "-p@$$wOrd_f0r_XOR_Alg0r1thm!7y";
 
     cout << "Enter name service: ";
-    cin >> service; 
+    cin >> service;
     cout << "Enter login: ";
-    cin >> login;  
+    cin >> login;
     cout << "Enter pass: ";
     cin >> pass;
 
     ofstream file("keys.txt", ios_base::app);
-    file << "Service: " << service << endl;
-    file << "Login: " << login << endl;
-    file << "Pass: " << pass << endl << endl;
+    file << "Service: " << xor_encrypt_decrypt(service, encryption_key) << endl;
+    file << "Login: " << xor_encrypt_decrypt(login, encryption_key) << endl;
+    file << "Pass: " << xor_encrypt_decrypt(pass, encryption_key) << endl;
+    file << "---" << endl;  
     file.close();
 }
+
 void view_keys() { // функция для просмотра ключей
+    string encryption_key = "-p@$$wOrd_f0r_XOR_Alg0r1thm!7y";
     ifstream file("keys.txt");
+    if (!file.is_open()) {
+        cout << "no key file found. Error 1. Check the info" << endl;
+        return;
+    }
     string line;
-    cout << endl;
+    cout << "\n=== Saved Keys ===\n" << endl;
     while (getline(file, line)) {
-        cout << line << endl;
+        if (line.empty() || line == "---") {
+            cout << endl;
+            continue;
+        }
+        size_t separator = line.find(": ");
+        if (separator != string::npos) {
+            string label = line.substr(0, separator + 2);
+            string encrypted = line.substr(separator + 2);
+            string decrypted = xor_encrypt_decrypt(encrypted, encryption_key);
+            cout << label << decrypted << endl;
+        }
     }
     file.close();
 }
+
 void info() { // функция для просмотра информации
+
+
     ifstream file("info.txt");
     string line;
     cout << endl;
@@ -54,23 +85,30 @@ void info() { // функция для просмотра информации
     }
     file.close();
 }
+
+void delete_keys() { // функция для удаления ключей
+    ofstream file("keys.txt", ios::trunc);
+    file.close();
+}
+
 int main(){
     setlocale(LC_ALL, "RU");
     srand(time(0));
     int function;
     // текстовое меню
-    cout << "Lock manager 0.2 " << endl;
+    cout << "Lock manager 0.3" << endl;
     cout << "Done by. https://github.com/DorexSoft/" << endl;
     cout << endl <<  "1. generate a password" << endl;
     cout << "2. remember password" << endl;
     cout << "3. view keys" << endl;
     cout << "4. info" << endl;
-    cout << "5. exit" << endl << endl; 
+    cout << "5. delete Keys" << endl;
+    cout << "6. exit" << endl << endl; 
     cout << "enter functions: ";
     cin >> function;
 
-    if (function > 0 && function < 5) { // запуск цикла, для выбора функций
-        while (function < 5 && function > 0) {
+    if (function > 0 && function < 6) { // запуск цикла, для выбора функций
+        while (function < 6 && function > 0) {
             if (function == 1)
                 generate_pass();
             else if (function == 2)
@@ -79,15 +117,18 @@ int main(){
                 view_keys();
             else if (function == 4)
                 info();
-
+            else if (function == 5)
+                delete_keys();
             cout << "enter functions: ";
             cin >> function;
-        } if (function > 5 or function < 1)
+        } if (function > 6 or function < 1)
             cout << "Error.";
         else
             cout << "Exit.";
-    } else if (function == 5)
+    } else if (function == 6)
         cout << "Exit.";
     else
         cout << "Error.";
+
+    return 0;
 }

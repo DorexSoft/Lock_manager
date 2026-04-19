@@ -9,4 +9,6 @@ a password to it. These data are saved in a file.
 3 View keys. This command allows you to
 view a file with all the services and data
 added by the user.
+Error 1. What to do? Create a "keys.txt" file in the 
+"Lock\Lock" folder
 Developer: https://github.com/DorexSoft
